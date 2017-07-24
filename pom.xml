@@ -27,6 +27,17 @@
 			<artifactId>fastjson</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>

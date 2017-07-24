@@ -18,7 +18,7 @@ public class CrawlStockServiceTest {
     @Test
     public void testCrawlStockService() {
         CrawlStockService crawlStockService = context.getBean(CrawlStockService.class);
-        crawlStockService.crawl();
+        crawlStockService.crawl(1);
     }
 
 }
