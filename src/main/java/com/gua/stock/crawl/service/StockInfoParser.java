@@ -1,8 +1,8 @@
 package com.gua.stock.crawl.service;
 
-import java.util.List;
+import com.gua.open.mybatis.dto.StockDao;
 
-import com.gua.open.jdbc.dto.StockDto;
+import java.util.List;
 
 /**
  * 类StockInfoParser.java的实现描述：TODO 类实现描述
@@ -11,7 +11,7 @@ import com.gua.open.jdbc.dto.StockDto;
  */
 public interface StockInfoParser {
 
-    public List<StockDto> parseStockDtoList(String data);
+    public List<StockDao> parseStockDtoList(String data);
 
     /**
      * 简单解析

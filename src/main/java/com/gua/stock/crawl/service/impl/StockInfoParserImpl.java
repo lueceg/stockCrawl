@@ -2,7 +2,7 @@ package com.gua.stock.crawl.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.gua.open.jdbc.dto.StockDto;
+import com.gua.open.mybatis.dto.StockDao;
 import com.gua.stock.crawl.service.StockInfoParser;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -42,7 +42,7 @@ public class StockInfoParserImpl implements StockInfoParser {
      * @return
      */
     @Override
-    public List<StockDto> parseStockDtoList(String data) {
+    public List<StockDao> parseStockDtoList(String data) {
         if (null == data) {
             return null;
         }
@@ -53,11 +53,11 @@ public class StockInfoParserImpl implements StockInfoParser {
         if (begin >= 0 && end > 0) {
             String validData = data.substring(begin + BEGIN_MARK.length(), end);
             if (StringUtils.isNoneBlank(validData)) {
-                List<StockDto> stockDtoList = new ArrayList<StockDto>();
+                List<StockDao> stockDtoList = new ArrayList<StockDao>();
                 String[] stockDatas = validData.split(SPLIT_MARK);
                 for (String stockData : stockDatas) {
                     List<String> stockDetails = Arrays.asList(stockData.split(",", -1)); // 用","分割需要使用尽可能多次
-                    StockDto stockDto = generateStockDto(stockDetails);
+                    StockDao stockDto = generateStockDto(stockDetails);
                     if (null != stockData) {
                         stockDtoList.add(stockDto);
                     }
@@ -92,7 +92,7 @@ public class StockInfoParserImpl implements StockInfoParser {
         return stockList;
     }
 
-    private StockDto generateStockDto(List<String> stockDetails) {
+    private StockDao generateStockDto(List<String> stockDetails) {
         if (CollectionUtils.isEmpty(stockDetails)) {
             return null;
         }
@@ -107,7 +107,7 @@ public class StockInfoParserImpl implements StockInfoParser {
         String mkt = StringUtils.equals("sh", stockDetails.get(19)) ? "sh" : "sz";
 
 
-        StockDto stockDto = new StockDto();
+        StockDao stockDto = new StockDao();
         stockDto.setStockCode(stockCode);
         stockDto.setStockName(stockName);
 

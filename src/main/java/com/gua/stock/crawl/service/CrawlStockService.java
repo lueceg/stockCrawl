@@ -3,6 +3,7 @@ package com.gua.stock.crawl.service;
 import java.util.List;
 
 import com.gua.open.jdbc.dto.StockDto;
+import com.gua.open.mybatis.dto.StockDao;
 
 /**
  * 类CrawlStockService.java的实现描述：TODO 类实现描述
@@ -16,6 +17,6 @@ public interface CrawlStockService {
      * 
      * @param pageIndex 第几页的数据
      */
-    public List<StockDto> crawl(Integer pageIndex);
+    public List<StockDao> crawl(Integer pageIndex);
 
 }

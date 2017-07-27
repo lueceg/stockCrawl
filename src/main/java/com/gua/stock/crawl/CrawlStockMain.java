@@ -10,11 +10,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
+import com.gua.open.mybatis.dto.StockDao;
+import com.gua.open.service.StockService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.gua.open.jdbc.dto.StockDto;
-import com.gua.open.jdbc.jdbctemplate.StockDao;
 import com.gua.stock.crawl.service.CrawlStockService;
 
 /**
@@ -29,21 +29,21 @@ public class CrawlStockMain {
 
     private final static int MAX_POOL_SIZE = 10;
 
-    private static StockDao stockDao;
+    private static StockService stockService;
     
     public static void main(String[] args) {
         CrawlStockService crawlStockService = context.getBean(CrawlStockService.class);
-        stockDao = context.getBean(StockDao.class);
+        stockService = context.getBean(StockService.class);
         ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(MAX_POOL_SIZE);
-        List<Future<List<StockDto>>> futureList = new ArrayList<>();
+        List<Future<List<StockDao>>> futureList = new ArrayList<>();
         for (int pageIndex = 1; pageIndex <= MAX_PAGE_INDEX; pageIndex++) {
-            Future<List<StockDto>> future = newFixedThreadPool.submit(new CrawlStockTask(crawlStockService, pageIndex));
+            Future<List<StockDao>> future = newFixedThreadPool.submit(new CrawlStockTask(crawlStockService, pageIndex));
             futureList.add(future);
         }
         
-        List<StockDto> totalStockDtoList = new ArrayList<>();
-        for (Future<List<StockDto>> future : futureList) {
-            List<StockDto> list = null;
+        List<StockDao> totalStockDtoList = new ArrayList<>();
+        for (Future<List<StockDao>> future : futureList) {
+            List<StockDao> list = null;
             try {
                 list = future.get();
             } catch (InterruptedException e) {
@@ -65,7 +65,7 @@ public class CrawlStockMain {
         // 用stream的方式过滤出id不重复的DTO
 
         Set<Integer> stockCodeSet = totalStockDtoList.stream().map(stockDto -> stockDto.getStockCode()).collect(Collectors.toSet());
-        List<StockDto> totalStockDtos = totalStockDtoList.stream().filter(stockDto -> {
+        List<StockDao> totalStockDtos = totalStockDtoList.stream().filter(stockDto -> {
             if (stockCodeSet.contains(stockDto.getStockCode())) {
                 stockCodeSet.remove(stockDto.getStockCode());
                 return true;
@@ -74,8 +74,8 @@ public class CrawlStockMain {
             }
         }).collect(Collectors.toList());
         System.out.println("实际存储数量：" + totalStockDtos.size());
-        stockDao.clearTable();
-        stockDao.batchInsert(totalStockDtos);
+        stockService.deleteAll();
+        stockService.insertBatch(totalStockDtos);
     }
     
 }
